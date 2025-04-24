@@ -28,13 +28,16 @@ This project demonstrates:
     <property name="username" value="root"/>
     <property name="password" value="Amu@0204"/>
 </bean>
-Purpose:
-Provides JDBC connectivity. This bean connects to MySQL and is later injected into the Hibernate SessionFactory.
+```
 
-🏭 2. LocalSessionFactoryBean - Hibernate SessionFactory Configuration
-xml
-Copy
-Edit
+🔹 **Purpose**: Provides the basic JDBC connectivity to the MySQL database.  
+🔹 **Role**: Injected into the Hibernate session factory so it can connect to the database.
+
+---
+
+### 🏭 2. `LocalSessionFactoryBean` - Hibernate Session Factory
+
+```xml
 <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="localSessionFactory">
     <property name="dataSource" ref="ds"/>
     <property name="hibernateProperties">
@@ -50,63 +53,67 @@ Edit
         </list>
     </property>
 </bean>
-Purpose:
-Creates the SessionFactory which Hibernate uses to perform all database operations such as CRUD, queries, and transactions.
+```
 
-🧰 3. HibernateTemplate - Simplifies Hibernate Operations
-xml
-Copy
-Edit
+🔹 **Purpose**: Creates the SessionFactory that manages Hibernate operations.  
+🔹 **Role**: Configures session management and maps entity classes.
+
+---
+
+### 🧰 3. `HibernateTemplate` - Simplifies Hibernate Operations
+
+```xml
 <bean class="org.springframework.orm.hibernate5.HibernateTemplate" name="hibernateTemplate">
     <property name="sessionFactory" ref="localSessionFactory"/>
 </bean>
-Purpose:
-A helper class that reduces boilerplate code for common Hibernate tasks. Offers easy-to-use methods like save(), update(), delete(), etc.
+```
 
-🧑‍🎓 4. StudentDao - DAO Layer for Entity Logic
-xml
-Copy
-Edit
+🔹 **Purpose**: Simplifies common Hibernate operations like save, update, delete, find.  
+🔹 **Role**: Used by DAOs to perform CRUD operations.
+
+---
+
+### 🧑‍🎓 4. `StudentDao` - DAO Bean for Student Entity
+
+```xml
 <bean class="com.spring.orm.dao.StudentDao" name="studentDao">
     <property name="hibernateTemplate" ref="hibernateTemplate"/>
 </bean>
-Purpose:
-Custom DAO class for the Student entity that interacts with the database using the HibernateTemplate. It contains logic for methods like addStudent(), getStudent(), getAllStudents(), etc.
+```
 
-🔁 5. HibernateTransactionManager & @Transactional - Transaction Handling
-xml
-Copy
-Edit
+🔹 **Purpose**: Custom Data Access Object for the `Student` entity.  
+🔹 **Role**: Contains methods for add, get, update operations on students.
+
+---
+
+### 🔁 5. `HibernateTransactionManager` & `tx:annotation-driven`
+
+```xml
 <bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" name="transactionManager">
     <property name="sessionFactory" ref="localSessionFactory"/>
 </bean>
 
 <tx:annotation-driven/>
-Purpose:
-HibernateTransactionManager manages the transactions and works behind the scenes to ensure atomicity.
-<tx:annotation-driven/> enables annotation-based transaction management using @Transactional.
+```
 
-🔗 How It All Connects
-DriverManagerDataSource provides JDBC connectivity to MySQL.
+🔹 **Purpose**: Enables declarative transaction management.  
+🔹 **Role**: Wraps DAO methods within transactions automatically.
 
-LocalSessionFactoryBean uses it to configure Hibernate.
+---
 
-HibernateTemplate uses the session factory for simplified CRUD operations.
+## 🔗 Integration Flow Summary
 
-StudentDao interacts with HibernateTemplate for entity persistence.
+1. `DriverManagerDataSource`: Connects to MySQL.
+2. `LocalSessionFactoryBean`: Creates session factory for Hibernate.
+3. `HibernateTemplate`: Provides simplified access to Hibernate operations.
+4. `StudentDao`: Performs data operations using `HibernateTemplate`.
+5. `HibernateTransactionManager` + `@Transactional`: Ensures proper transaction boundaries.
 
-HibernateTransactionManager and @Transactional manage transaction boundaries automatically.
+---
 
-📦 Technologies Used
-Java 21
+## ✅ Final Output
 
-Spring Framework
-
-Hibernate 5
-
-MySQL
-
-Maven
-
-Eclipse IDE
-
+- Easy setup for Spring + Hibernate
+- Simplified DAO layer
+- XML-based modular configuration
+- Clean architecture with separation of concerns
